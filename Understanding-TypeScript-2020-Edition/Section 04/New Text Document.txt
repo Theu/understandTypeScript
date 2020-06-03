@@ -1,3 +1,0 @@
-https://kangax.github.io/compat-table/es6/
-
-https://academind.com/learn/javascript/reference-vs-primitive-values/
