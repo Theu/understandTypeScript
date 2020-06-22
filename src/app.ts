@@ -1,40 +1,101 @@
-// Code goes here!
+interface Fruit {
+  nameFruit: string,
+  quantity: number
+}
 
-const userName = "Matteo";
-// userName = 'Pingu'
+interface Creamer {
+  nameCreamer: string,
+  isVegan: boolean
+}
 
-// let age = 38;
-// age = 39;
+// INTERSECTION can be achieved using interfaces --> interfa3 extends interface2, interface3 {}
+// IGOR: I know that in this object I can pass a type declaration that doesnt belong to the interfaces I am intersecting.
+// is this a good practice or I should create another interface?
+interface IceCream extends Fruit, Creamer {
+  alcolic: boolean
+}
 
-const hobbies = ["learning", "cooking"];
-const person = {
-  firstName: "Matteo",
-  age: 38,
-};
+const fruityDessert: IceCream = {
+  nameFruit: 'Banana',
+  quantity: 2,
+  nameCreamer: 'Almand milk',
+  isVegan: true,
+  alcolic: false
+}
 
-const copiedPerson = { ...person };
+type Person = {
+  name: string,
+  interest: string[],
+}
 
-const add = (...numbers: number[]) =>
-  numbers.reduce((accumulator, currVal) => accumulator + currVal, 0);
+type Candidate = {
+  id: number,
+  role: string
+}
 
-const addNumbers = add(1, 2, 3, 4, 5, 6);
-console.log("addNumbers :>> ", addNumbers);
+// INTERSECTION can be achieved using types --> type3 = type1 & type2
+type Employee = Person & Candidate;
 
-const [hobby1, hobby2] = hobbies;
-const { firstName, age } = person;
+const developer: Employee = {
+  name: 'Matteo',
+  interest: ['web-development', 'frontend'],
+  id: 176761,
+  role: 'frontend'
+}
 
-const tester = [
-  [1, 2],
-  [3, 4],
-];
+// and also HERE NOTE: it takes what is in common!!!
+type Combinable = string | number;
+type Numeric = number | boolean;
 
-const [test4, test5] = tester;
+type Universal = Combinable & Numeric;
+const tester: Universal = 42
 
-const [test1, test2] = [test4, test5].map(item => {
+// typeGuard combining TS and js typeof
+function add(a: Combinable, b: Combinable) {
+  // return a + b; can't work
 
-    console.log('item :>> ', item);
-    return [...item, 1];});
-console.log('test1 :>> ', test1);
-console.log('test2 :>> ', test2);
+  // this is a typeGuard
+  if (typeof a === 'string' || typeof b === 'string') {
+    return a.toString() + b.toString()
+  }
 
+  // here it works because now TS knows that here we have ONLY numbers, the previuos condition matching string
+  return a + b;
+}
 
+// type Person = {
+//   name: string,
+//   interest: string[],
+// }
+
+// type Candidate = {
+//   id: number,
+//   role: string
+// }
+
+type UnknownEmployee = Person | Candidate;
+// const developer: Employee = {
+//   name: 'Matteo',
+//   interest: ['web-development', 'frontend'],
+//   id: 176761,
+//   role: 'frontend'
+// }
+
+// TYPE GUARD with type
+const printEmployee = (emp: UnknownEmployee) => {
+  // console.log(emp.name); // can't work because my type is INTERSECTION
+  if ('name' in emp) {
+    console.log(emp.name);
+  }
+}
+
+// I do not know the structure of the object I will receive but I DO KNOW the types composing it
+interface ErrorContainer {
+  [prop: string]: string | number;
+}
+
+const ErrorBag: ErrorContainer = {
+  code: 404,
+  notFoundMessage: 'Page not found',
+  email: 'not a valid email'
+}
